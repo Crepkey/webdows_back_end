@@ -7,6 +7,11 @@ function createHash(input) {
   return hash;
 }
 
+function comparePasswords(typedPassword, storedPassword) {
+  return bcrypt.compareSync(typedPassword, storedPassword);
+}
+
 module.exports = {
-  createHash: createHash
+  createHash: createHash,
+  comparePasswords: comparePasswords
 };
