@@ -2,15 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const db = require("./queries");
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  console.log(process.env.TEST_DATA);
-  res.send("Hello world");
-});
+app.post("/", db.checkUserAccount);
 
 const port = process.env.PORT || 9000;
 
