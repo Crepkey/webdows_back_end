@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const util = require("./util");
 const Pool = require("pg").Pool;
 const pool = new Pool({
@@ -19,7 +20,13 @@ const checkUserAccount = (request, response) => {
           const typedPassword = request.body.password;
           const storedPassword = results.rows[0].password;
           if (util.comparePasswords(typedPassword, storedPassword)) {
-            response.status(200).json(results.rows);
+            const user = results.rows[0];
+            /* TODO: Secrect key will be a random charchain from dotenv */
+            jwt.sign(user, "secretKey", (err, token) => {
+              response.cookie("valami", "VALAMI");
+              response.status(200).json({ Valami: "Valami" });
+            });
+            response.status(200);
             /* TODO: JWT sends back from here*/
           } else {
             const errorMessage = "Incorrect password, please type it again.";
