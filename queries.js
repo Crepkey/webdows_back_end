@@ -10,38 +10,17 @@ const pool = new Pool({
   port: process.env.DB_PORT
 });
 
-const checkUserAccount = (request, response) => {
-  pool.query(
-    `SELECT * FROM users WHERE username = '${request.body.username}'`,
-    (error, results) => {
-      if (error) {
-        throw error;
-      } else {
-        if (results.rows.length !== 0) {
-          const typedPassword = request.body.password;
-          const storedPassword = results.rows[0].password;
-          if (util.comparePasswords(typedPassword, storedPassword)) {
-            /* CREATE TOKEN */
-
-            const user = results.rows[0];
-            const token = auth.generateToken(user);
-
-            response.cookie("token", token);
-            response.status(200).json("You are successfully logged in");
-          } else {
-            const errorMessage = "Incorrect password, please type it again.";
-            response.status(200).json(errorMessage);
-          }
-        } else {
-          const responseMessage =
-            "The username is not found in our system, please check it.";
-          response.status(200).json(responseMessage);
-        }
-      }
-    }
-  );
-};
+async function checkUserInDatabase(username) {
+  try {
+    const res = await pool.query(
+      `SELECT * FROM users WHERE username = '${username}'`
+    );
+    return res;
+  } catch (err) {
+    return err.stack;
+  }
+}
 
 module.exports = {
-  checkUserAccount: checkUserAccount
+  checkUserInDatabase: checkUserInDatabase
 };
