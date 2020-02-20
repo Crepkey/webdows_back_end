@@ -1,4 +1,5 @@
 require("dotenv").config();
+const ctlr = require("./controller");
 const auth = require("./authentication");
 const express = require("express");
 const app = express();
@@ -27,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.post("/login", db.checkUserAccount);
+app.post("/login", ctlr.login);
 
 app.get("/test", auth.verifyToken, (req, res) => {
   res.status(200).json({ valami: "VALAMI" });
