@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const auth = require("./authentication");
 const util = require("./util");
 const Pool = require("pg").Pool;
 const pool = new Pool({
@@ -23,11 +24,10 @@ const checkUserAccount = (request, response) => {
             /* CREATE TOKEN */
 
             const user = results.rows[0];
-            jwt.sign(user, "secretKey", (err, token) => {
-              response.cookie("token", token);
-              response.status(200).json("You are successfully logged in");
-            });
-            response.status(200);
+            const token = auth.generateToken(user);
+
+            response.cookie("token", token);
+            response.status(200).json("You are successfully logged in");
           } else {
             const errorMessage = "Incorrect password, please type it again.";
             response.status(200).json(errorMessage);

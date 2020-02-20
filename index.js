@@ -1,5 +1,5 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
+const auth = require("./authentication");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -29,23 +29,9 @@ app.use(cookieParser());
 
 app.post("/login", db.checkUserAccount);
 
-app.get("/test", verifyToken, (req, res) => {
+app.get("/test", auth.verifyToken, (req, res) => {
   res.status(200).json({ valami: "VALAMI" });
 });
-
-function verifyToken(req, res, next) {
-  const token = req.cookies.token || "";
-  try {
-    if (!token) {
-      return res.status(401).json("You need to Login");
-    }
-    const decrypt = jwt.verify(token, "secretKey");
-    console.log(decrypt);
-    next();
-  } catch (err) {
-    return res.status(500).json(err.toString());
-  }
-}
 
 const port = process.env.PORT || 9000;
 
