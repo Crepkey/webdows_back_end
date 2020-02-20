@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 /* TODO: It would be more fast if used here an async func */
 
@@ -20,7 +21,20 @@ function verifyToken(req, res, next) {
   }
 }
 
+function createHash(input) {
+  const saltRounds = parseInt(process.env.saltRounds);
+  const salt = bcrypt.genSaltSync(saltRounds);
+  const hash = bcrypt.hashSync(input, salt);
+  return hash;
+}
+
+function comparePasswords(typedPassword, storedPassword) {
+  return bcrypt.compareSync(typedPassword, storedPassword);
+}
+
 module.exports = {
   generateToken: generateToken,
-  verifyToken: verifyToken
+  verifyToken: verifyToken,
+  createHash: createHash,
+  comparePasswords: comparePasswords
 };

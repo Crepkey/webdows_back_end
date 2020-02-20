@@ -1,6 +1,5 @@
 const MissingData = require("./customErrors/missingData");
 const db = require("./queries");
-const util = require("./util");
 const auth = require("./authentication");
 
 async function login(req, res, next) {
@@ -23,7 +22,7 @@ async function login(req, res, next) {
       const incomingPassword = password;
       const storedPassword = result.rows[0].password;
 
-      if (util.comparePasswords(incomingPassword, storedPassword)) {
+      if (auth.comparePasswords(incomingPassword, storedPassword)) {
         const token = auth.generateToken(username);
         res.cookie("token", token);
         res.status(200).json("You are successfully logged in");
